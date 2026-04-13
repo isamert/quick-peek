@@ -93,10 +93,12 @@
     (goto-char pos)
     (let ((line-move-visual 1)
           (win-start (window-start nil))
-          (available-lines (window-body-height)))
-      (while (> (point) win-start)
-        (vertical-motion -1)
-        (cl-decf available-lines))
+          (available-lines (window-body-height))
+          (moved t))
+      (while (and moved (> (point) win-start))
+        (setq moved (not (zerop (vertical-motion -1))))
+        (when moved
+          (cl-decf available-lines)))
       available-lines)))
 
 (defun quick-peek--text-width (from to)
